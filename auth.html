@@ -12,6 +12,14 @@
       padding: 40px;
     }
 
+    code {
+      background: #1e1e1e;
+      padding: 10px;
+      display: inline-block;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+
     button {
       background: #9147ff;
       border: none;
@@ -45,6 +53,13 @@
   <div class="warning">
     ⚠️ No compartas esta página. El token se copiará sin mostrarse en pantalla.
   </div>
+
+  <p style="font-size: 0.9rem; color: #aaa; margin-top: 1rem;">
+  Este token <strong>no se guarda</strong> ni se comparte con nadie. Solo se usa para leer y enviar mensajes en el chat de Twitch durante el juego. Tú y Twitch son los únicos que pueden verlo.
+  </p>
+  <p style="font-size: 0.8rem; color: #777;">
+  Permisos solicitados: <code>chat:read</code>, <code>chat:edit</code>.
+  </p>
 
   <div id="tokenContainer" style="display: none;">
     <h2>¡Token generado!</h2>
