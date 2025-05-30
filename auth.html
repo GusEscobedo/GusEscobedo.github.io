@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Obtener token de Twitch - ChatTrivia</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #121212;
+      color: #eee;
+      text-align: center;
+      padding: 40px;
+    }
+    code {
+      background: #1e1e1e;
+      padding: 10px;
+      display: inline-block;
+      border-radius: 6px;
+      margin-top: 20px;
+    }
+    button {
+      background: #9147ff;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generador de Token de Twitch</h1>
+  <p>Haz clic en el botón para autorizar el juego y obtener tu token.</p>
+  <button onclick="authorize()">Generar Token</button>
+
+  <div id="result"></div>
+
+  <script>
+    const client_id = "w3626861sr4wxlss3ch96jeftcbjbc";
+    const redirect_uri = "https://gusescobedo.github.io/auth.html";
+    const scopes = ["chat:read", "chat:edit"];
+
+    function authorize() {
+      const url = `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=token&scope=${scopes.join('+')}`;
+      window.location = url;
+    }
+
+    window.onload = () => {
+      if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const accessToken = params.get("access_token");
+
+        if (accessToken) {
+          const fullToken = `oauth:${accessToken}`;
+          document.getElementById("result").innerHTML = `
+            <h2>¡Token generado!</h2>
+            <p>Copia y pega este token en el juego:</p>
+            <code>${fullToken}</code>
+            <p>⚠️ Tu portapapeles se ha sobrescrito automáticamente por seguridad.</p>
+          `;
+          navigator.clipboard.writeText(fullToken);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
