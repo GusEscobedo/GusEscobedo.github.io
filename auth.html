@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Obtener token de Twitch - ChatTrivia</title>
+  <title>Generador de Token de Twitch</title>
   <style>
     body {
       font-family: sans-serif;
@@ -11,13 +11,7 @@
       text-align: center;
       padding: 40px;
     }
-    code {
-      background: #1e1e1e;
-      padding: 10px;
-      display: inline-block;
-      border-radius: 6px;
-      margin-top: 20px;
-    }
+
     button {
       background: #9147ff;
       border: none;
@@ -26,6 +20,20 @@
       font-size: 1rem;
       border-radius: 5px;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .warning {
+      color: #f55;
+      font-weight: bold;
+      font-size: 1rem;
+      margin-top: 20px;
+    }
+
+    #copyNotice {
+      margin-top: 10px;
+      color: #7f7;
+      display: none;
     }
   </style>
 </head>
@@ -34,16 +42,35 @@
   <p>Haz clic en el botón para autorizar el juego y obtener tu token.</p>
   <button onclick="authorize()">Generar Token</button>
 
-  <div id="result"></div>
+  <div class="warning">
+    ⚠️ No compartas esta página. El token se copiará sin mostrarse en pantalla.
+  </div>
+
+  <div id="tokenContainer" style="display: none;">
+    <h2>¡Token generado!</h2>
+    <p>Haz clic en el botón para copiar el token y volver al juego:</p>
+    <button onclick="copyToken()">Copiar token</button>
+    <div id="copyNotice">✅ Token copiado al portapapeles</div>
+  </div>
 
   <script>
-    const client_id = "w3626861sr4wxlss3ch96jeftcbjbc";
+    const client_id = "PEGAR_TU_CLIENT_ID_AQUI";
     const redirect_uri = "https://gusescobedo.github.io/auth.html";
     const scopes = ["chat:read", "chat:edit"];
+
+    let fullToken = "";
 
     function authorize() {
       const url = `https://id.twitch.tv/oauth2/authorize?client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&response_type=token&scope=${scopes.join('+')}`;
       window.location = url;
+    }
+
+    function copyToken() {
+      if (fullToken) {
+        navigator.clipboard.writeText(fullToken).then(() => {
+          document.getElementById("copyNotice").style.display = "block";
+        });
+      }
     }
 
     window.onload = () => {
@@ -53,14 +80,8 @@
         const accessToken = params.get("access_token");
 
         if (accessToken) {
-          const fullToken = `oauth:${accessToken}`;
-          document.getElementById("result").innerHTML = `
-            <h2>¡Token generado!</h2>
-            <p>Copia y pega este token en el juego:</p>
-            <code>${fullToken}</code>
-            <p>⚠️ Tu portapapeles se ha sobrescrito automáticamente por seguridad.</p>
-          `;
-          navigator.clipboard.writeText(fullToken);
+          fullToken = `oauth:${accessToken}`;
+          document.getElementById("tokenContainer").style.display = "block";
         }
       }
     };
