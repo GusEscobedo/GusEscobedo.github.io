@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Generador de Token de Twitch</title>
+  <title>Twitch Token Generator</title>
   <style>
     body {
       font-family: sans-serif;
@@ -10,6 +10,7 @@
       color: #eee;
       text-align: center;
       padding: 40px;
+      position: relative;
     }
 
     code {
@@ -43,36 +44,49 @@
       color: #7f7;
       display: none;
     }
+
+    .lang-selector {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .lang-selector img {
+      width: 32px;
+      height: 24px;
+      margin-left: 5px;
+      cursor: pointer;
+      border: 1px solid #444;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
-  <h1>Generador de Token de Twitch</h1>
-  <p>Haz clic en el botón para autorizar el juego y obtener tu token.</p>
-  <button onclick="authorize()">Generar Token</button>
-
-  <div class="warning">
-    ⚠️ No compartas esta página. El token se copiará sin mostrarse en pantalla.
+  <div class="lang-selector">
+    <img src="https://flagcdn.com/us.svg" alt="English" onclick="setLanguage('en')" />
+    <img src="https://flagcdn.com/mx.svg" alt="Español" onclick="setLanguage('es')" />
   </div>
 
-  <p style="font-size: 0.9rem; color: #aaa; margin-top: 1rem;">
-  Este token <strong>no se guarda</strong> ni se comparte con nadie. Solo se usa para leer y enviar mensajes en el chat de Twitch durante el juego. Tú y Twitch son los únicos que pueden verlo.
-  </p>
-  <p style="font-size: 0.8rem; color: #777;">
-  Permisos solicitados: <code>chat:read</code>, <code>chat:edit</code>.
-  </p>
+  <h1 id="title"></h1>
+  <p id="instruction"></p>
+  <button onclick="authorize()" id="generateBtn"></button>
+
+  <div class="warning" id="warningText"></div>
+
+  <p style="font-size: 0.9rem; color: #aaa; margin-top: 1rem;" id="privacyNotice"></p>
+  <p style="font-size: 0.8rem; color: #777;" id="scopes"></p>
 
   <div id="tokenContainer" style="display: none;">
-    <h2>¡Token generado!</h2>
-    <p>Haz clic en el botón para copiar el token y volver al juego:</p>
-    <button onclick="copyToken()">Copiar token</button>
-    <div id="copyNotice">✅ Token copiado al portapapeles. Ya puedes volver al juego, no olvides cerrar esta página</div>
+    <h2 id="tokenGenerated"></h2>
+    <p id="copyInstruction"></p>
+    <button onclick="copyToken()" id="copyBtn"></button>
+    <div id="copyNotice">✅ Token copied to clipboard. You can now return to the game. Don’t forget to close this page.</div>
   </div>
 
   <script>
     const client_id = "w3626861sr4wxlss3ch96jeftcbjbc";
     const redirect_uri = "https://gusescobedo.github.io/auth.html";
     const scopes = ["chat:read", "chat:edit"];
-
     let fullToken = "";
 
     function authorize() {
@@ -89,6 +103,9 @@
     }
 
     window.onload = () => {
+      const lang = localStorage.getItem("lang") || "en";
+      setLanguage(lang);
+
       if (window.location.hash) {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
@@ -100,6 +117,49 @@
         }
       }
     };
+
+    const translations = {
+      en: {
+        title: "Twitch Token Generator",
+        instruction: "Click the button below to authorize the game and generate your token.",
+        generateBtn: "Generate Token",
+        warningText: "⚠️ Don't share this page. The token will be copied without being shown.",
+        privacyNotice: "This token is not stored or shared with anyone. It's only used to read and send messages in your Twitch chat during the game. Only you and Twitch have access to it.",
+        scopes: "Requested permissions: chat:read, chat:edit.",
+        tokenGenerated: "Token Generated!",
+        copyInstruction: "Click the button below to copy your token and return to the game:",
+        copyBtn: "Copy Token",
+        copyNotice: "✅ Token copied to clipboard. You can now return to the game. Don’t forget to close this page."
+      },
+      es: {
+        title: "Generador de Token de Twitch",
+        instruction: "Haz clic en el botón para autorizar el juego y obtener tu token.",
+        generateBtn: "Generar Token",
+        warningText: "⚠️ No compartas esta página. El token se copiará sin mostrarse en pantalla.",
+        privacyNotice: "Este token no se guarda ni se comparte con nadie. Solo se usa para leer y enviar mensajes en el chat de Twitch durante el juego. Tú y Twitch son los únicos que pueden verlo.",
+        scopes: "Permisos solicitados: chat:read, chat:edit.",
+        tokenGenerated: "¡Token generado!",
+        copyInstruction: "Haz clic en el botón para copiar el token y volver al juego:",
+        copyBtn: "Copiar token",
+        copyNotice: "✅ Token copiado al portapapeles. Ya puedes volver al juego. No olvides cerrar esta página."
+      }
+    };
+
+    function setLanguage(lang) {
+      localStorage.setItem("lang", lang);
+      const t = translations[lang];
+
+      document.getElementById("title").textContent = t.title;
+      document.getElementById("instruction").textContent = t.instruction;
+      document.getElementById("generateBtn").textContent = t.generateBtn;
+      document.getElementById("warningText").textContent = t.warningText;
+      document.getElementById("privacyNotice").textContent = t.privacyNotice;
+      document.getElementById("scopes").textContent = t.scopes;
+      document.getElementById("tokenGenerated").textContent = t.tokenGenerated;
+      document.getElementById("copyInstruction").textContent = t.copyInstruction;
+      document.getElementById("copyBtn").textContent = t.copyBtn;
+      document.getElementById("copyNotice").textContent = t.copyNotice;
+    }
   </script>
 </body>
 </html>
